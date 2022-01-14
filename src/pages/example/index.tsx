@@ -3,7 +3,7 @@
  * @Autor: CYF
  * @Date: 2022-01-13 08:09:50
  * @LastEditors: CYF
- * @LastEditTime: 2022-01-14 11:14:08
+ * @LastEditTime: 2022-01-14 13:20:30
  */
 import { View, Text, Swiper, SwiperItem } from "@tarojs/components";
 import { Component } from "react";
@@ -100,7 +100,7 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
    */
   updatDate(index: number, slideType: number) {
     let tmpDataList = [...this.state.dateList];
-    let tmpFirstDay = null;
+    let tmpFirstDay;
     if (slideType) {
       tmpFirstDay = moment(this.state.currFirstDay).subtract(14, 'days').format('YYYY-MM-DD');
     } else {
@@ -151,7 +151,7 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
       if (tmpFirstDay.year() < this.state.currYear && tmpLastDay.year() < this.state.currYear) {
         this.setStateP({
           currYear: tmpFirstDay.year(),
-          currWeek: tmpFirstDay.isoWeek(),
+          currWeek: tmpFirstDay.week(),
         }).then(() => {
           this.setStateP({
             currFirstDay: moment().weekYear(this.state.currYear).week(this.state.currWeek).startOf('week').format('YYYY/MM/DD'),
