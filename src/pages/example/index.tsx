@@ -3,7 +3,7 @@
  * @Autor: CYF
  * @Date: 2022-01-13 08:09:50
  * @LastEditors: CYF
- * @LastEditTime: 2022-01-13 17:49:23
+ * @LastEditTime: 2022-01-14 09:26:57
  */
 import { View, Text, Swiper, SwiperItem } from "@tarojs/components";
 import { Component } from "react";
@@ -25,7 +25,7 @@ type PageState = {
 export default class CalendarCom extends Component<PageStateProps, PageState> {
   static defaultProps = {
     acceptCurrYear: new Date().getFullYear(), // 年
-    acceptCurrWeek: 3, // 周
+    acceptCurrWeek: 1, // 周
   };
   constructor(props) {
     super(props);
@@ -79,7 +79,6 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
    */
   getCurrDate({ firstDay = this.state.currFirstDay }) {
     let tmpCurrFirstDay = moment(new Date(firstDay)).startOf('isoWeek').format('YYYY-MM-DD');
-    console.log("当前周的第一天是：", tmpCurrFirstDay);
     let intactList: Array<{ date: Date }> = [];
     for (let i = 0; i < 7; i++) {
       let tmpDate = new Date(tmpCurrFirstDay);
@@ -104,9 +103,8 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
       tmpFirstDay = moment(this.state.currFirstDay).add(14, 'days').format('YYYY-MM-DD');
     }
     tmpDataList[index] = this.getCurrDate({ firstDay: tmpFirstDay });
-    console.log(tmpDataList[index]);
     this.setStateP({
-      dataList: [...tmpFirstDay],
+      dateList: [...tmpDataList.map(item => [...item])],
     });
   }
 
@@ -121,13 +119,11 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
           currYear: tmpLastDay.year(),
           currWeek: 1
         }).then(() => {
-          console.log('滑动-当前周的第一天：', moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'));
           this.setStateP({
             currFirstDay: moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'),
           });
         }).then(() => {
-          let updateIndex = currIndex + 1 + 2 > 4 ? currIndex + 1 + 2 - 4 - 1 : currIndex + 1 + 2; // 需要被更新的dataList的index(swiper显示的当前比实际当前周要小1)
-          console.log('被更新的index：', updateIndex);
+          let updateIndex = currIndex + 3 > 4 ? currIndex + 3 - 1 - 4 : currIndex + 3; // 需要被更新的dataList的index
           this.updatDate(updateIndex, 0);
         }).catch(() => { });
       } else {
@@ -136,13 +132,11 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
             currWeek: preState.currWeek + 1
           }
         }).then(() => {
-          console.log('滑动-当前周的第一天：', moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'));
           this.setStateP({
             currFirstDay: moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'),
           });
         }).then(() => {
-          let updateIndex = currIndex + 1 + 2 > 4 ? currIndex + 1 + 2 - 4 - 1 : currIndex + 1 + 2; // 需要被更新的dataList的index(swiper显示的当前比实际当前周要小1)
-          console.log('被更新的index：', updateIndex);
+          let updateIndex = currIndex + 3 > 4 ? currIndex + 3 - 1 - 4 : currIndex + 3; // 需要被更新的dataList的index
           this.updatDate(updateIndex, 0);
         }).catch(() => { });
       }
@@ -154,13 +148,11 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
           currYear: tmpFirstDay.year(),
           currWeek: tmpFirstDay.isoWeek(),
         }).then(() => {
-          console.log('滑动-当前周的第一天：', moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'));
           this.setStateP({
             currFirstDay: moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'),
           });
         }).then(() => {
-          let updateIndex = currIndex + 1 - 2 < 0 ? currIndex + 1 - 2 + 4 + 1: currIndex + 1 - 2; // 需要被更新的dataList的index
-          console.log('被更新的index：', updateIndex);
+          let updateIndex = currIndex - 1 < 0 ? 4 : currIndex - 1; // 需要被更新的dataList的index
           this.updatDate(updateIndex, 1);
         }).catch(() => { });
       } else {
@@ -169,15 +161,13 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
             currWeek: preState.currWeek - 1
           }
         }).then(() => {
-          console.log('滑动-当前周的第一天：', moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'));
           this.setStateP({
             currFirstDay: moment().year(this.state.currYear).isoWeek(this.state.currWeek).startOf('isoWeek').format('YYYY-MM-DD'),
           });
         }).then(() => {
-          let updateIndex = currIndex + 1 - 2 < 0 ? currIndex + 1 - 2 + 4 + 1 : currIndex + 1 - 2; // 需要被更新的dataList的index
-          console.log('被更新的index：', updateIndex);
+          let updateIndex = currIndex - 1 < 0 ? 4 : currIndex - 1; // 需要被更新的dataList的index
           this.updatDate(updateIndex, 1);
-        }).catch(() => {});
+        }).catch(() => { });
       }
     }
     this.setStateP({
@@ -196,7 +186,7 @@ export default class CalendarCom extends Component<PageStateProps, PageState> {
             boxSizing: "border-box",
           }}
         >
-          第{this.state.currWeek}周
+          第{this.state.currWeek}周 {moment(this.state.currFirstDay).format('YYYY/MM/DD')}-{moment(this.state.currFirstDay).add(6, 'days').format('YYYY/MM/DD')}
         </Text>
         <View>
           {["一", "二", "三", "四", "五", "六", "日"].map((item) => {
