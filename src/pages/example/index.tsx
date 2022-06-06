@@ -1,9 +1,9 @@
 /*
- * @Description: 周日历
+ * @Description: 周日历(可以考虑全局定义一个变量，onchange事件触发一次即+1，onTouchEnd事件中判断当前时间，或者考虑onTouchStart时禁用change，touchEnd启用，手动改变index)
  * @Autor: CYF
  * @Date: 2022-01-13 08:09:50
  * @LastEditors: CYF
- * @LastEditTime: 2022-01-14 13:20:30
+ * @LastEditTime: 2022-01-26 14:35:23
  */
 import { View, Text, Swiper, SwiperItem } from "@tarojs/components";
 import { Component } from "react";
